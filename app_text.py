@@ -23,10 +23,13 @@ def replace_paragraphs_with_placeholder(html_content):
         # Step 4: Find all <p> tags with the specific class within the main content div
         for p_tag in main_content_div.find_all('p', class_="paragraph inline-placeholder vossi-paragraph-primary-core-light"):
             p_tag.string = "Placeholder name"  # Replace content with the placeholder text
+
+    # Replace headline with text
     headline = soup.find('h1', class_="headline__text inline-placeholder vossi-headline-primary-core-light", id="maincontent")
     if headline:
-        headline.string = "New Headline Text"  # Replace the headline text
-  
+        with open('title.txt') as f:
+            headline.string = f.read()  # Replace the headline text with contents of text file
+    
     # Return the modified HTML
     return str(soup)
 
