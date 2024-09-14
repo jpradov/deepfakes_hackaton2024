@@ -10,12 +10,10 @@ def generate_image_from_image(prompt, input_image_path, output_path, strength=0.
 
     #model_id = "stabilityai/stable-diffusion-xl-base-1.0"
 
-    model_id = "black-forest-labs/FLUX.1-dev"
+    #model_id = "black-forest-labs/FLUX.1-dev"
+    model_id = "VideoAditor/Flux-Lora-Realism"
 
-    pipe = FluxPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=torch.bfloat16)
-
-    # Use the DPMSolverMultistepScheduler for faster inference
-    pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
+    pipe = FluxPipeline.from_pretrained(model_id, torch_dtype=torch.bfloat16)
 
     # Enable memory efficient attention
     pipe.enable_attention_slicing()
@@ -44,7 +42,11 @@ def generate_image_from_image(prompt, input_image_path, output_path, strength=0.
 if __name__ == "__main__":
     #prompt = input("Enter your image prompt: ")
     #input_image_path = input("Enter the path to your input image: ")
-    output_path = "hackathon_images_ai/generated_image_flux.png"
-    prompt = "Mr. Bean with a hat"
+    output_path = "hackathon_images_ai/generated_image_flux_output2_realism.png"
+    #prompt = "Evidence of alien technology in Ancient Egypt"
+    #prompt = "An ancient archeological artifact displayed in a museum exhibit. The artifact is a weathered stone tablet inscribed with faded hieroglyphics, partially cracked from centuries of exposure. It's displayed on a pedestal under soft, warm lighting, with a glass case surrounding it. Behind the artifact is a descriptive plaque detailing its origin, from a lost civilization. The background includes other artifacts, like bronze tools, pottery shards, and a tall statue with intricate carvings. The museum room has a calm, scholarly atmosphere, with dark wooden floors and high ceilings adorned with spotlights."
+    prompt ="""
+    A museum exhibit showcasing an ancient archeological sample of alien technology discovered in Egypt. The exhibit includes a mysterious artifact, made of sleek, metallic materials not found on Earth, with glowing symbols resembling hieroglyphics. The artifact is partially embedded in ancient sandstone, surrounded by other Egyptian relics such as statues, scrolls, and pottery. The alien technology has a futuristic, extraterrestrial design, contrasting with the traditional ancient Egyptian aesthetic. Museum lighting highlights the artifact, casting long shadows and creating an aura of mystery and discovery.
+    """
     input_image_path = "hackathon_images_base/mr_bean.jpg"
     generate_image_from_image(prompt, input_image_path, output_path)
