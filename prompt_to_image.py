@@ -121,7 +121,6 @@ if response.status_code == 200:
 
     # Save or display the generated image
     image.save("media/conspiracy_image.png")
-    image.show()
 else:
     print(f"Request failed with status code: {response.status_code}")
     print(response.text)

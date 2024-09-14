@@ -24,7 +24,7 @@ def main():
         generate_image = subprocess.run(['python', f'prompt_to_image.py', '--diffusion_prompt', 'diffusion_prompt_output_file.json'], capture_output=False, text=False)
 
         if generate_article_text.returncode == 0 and generate_image.returncode == 0:
-                serve_website = subprocess.run(['python', f'app_text.py'], capture_output=True, text=True)
+                serve_website = subprocess.run(['python', f'app_text.py'], capture_output=False, text=False)
 
                 if serve_website.returncode == 0:
                      print("Done.")

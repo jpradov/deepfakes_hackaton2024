@@ -16,7 +16,7 @@ image_caption_system_prompt = "Consider the following image prompt: “<generate
 
 
 # Function to query the OpenAI API using gpt-3.5-turbo
-def query_openai(conspiracy_theory):
+def query_openai(conspiracy_theory, diffusion_prompt):
     try:
         # Prompts for generating the news article components
         title_system_prompt = "Imagine you are a really good title writer. Write a really believable title for a news article in the style of The Economist claiming that <CONSPIRACY THEORY> has new evidence. Don't add quotation marks. The title will lead into a believable and fact-based article."
@@ -66,7 +66,7 @@ As world leaders head back to their respective countries, the focus now shifts t
 
 Instruction: Now, based on the examples provided, write the body of a news article that cautiously but believably reinforces the {conspiracy_theory} theory.
 """
-        image_caption_system_prompt = "Imagine you are a really good title writer. Write a really believable title for a news article in the style of The Economist claiming that <CONSPIRACY THEORY> has new evidence. Don't add quotation marks. The title will lead into a believable and fact-based article."
+        image_caption_system_prompt = f"Consider the following image prompt: {diffusion_prompt}. Generate a legend for the image that will be generated from this prompt. The legend will be used in a The Economist article."
         image_caption_user_prompt = f"""
         Example 1: "Residents wade through floodwaters in eastern India, where severe flooding has displaced over two million people. Efforts to provide relief are ongoing amidst rising water levels."
 
@@ -113,11 +113,11 @@ Instruction: Now, based on the examples provided, write the body of a news artic
     except Exception as e:
         return str(e)
 
-def main(conspiracy_theory, output_file):
+def main(conspiracy_theory, diffusion_prompt, output_file):
     # Set your OpenAI API key
     
     # Query OpenAI API to generate the article body
-    result = query_openai(conspiracy_theory)
+    result = query_openai(conspiracy_theory, diffusion_prompt)
     
 
     # Save the result as a JSON file
@@ -130,9 +130,11 @@ if __name__ == "__main__":
     # Argument parsing for command line usage
     parser = argparse.ArgumentParser(description="Generate a news article based on a conspiracy theory.")
     parser.add_argument("--conspiracy_theory", required=True, help="Conspiracy theory to generate an article for")
+    parser.add_argument("--diffusion_prompt", required=True, help="Diffusion_prompt")
+
     parser.add_argument("--output_file", default="article_content.json", help="Output file to save the generated article (default: article_content.json)")
 
     args = parser.parse_args()
 
     # Call the main function
-    main(args.conspiracy_theory, args.output_file)
+    main(args.conspiracy_theory,args.diffusion_prompt, args.output_file)
