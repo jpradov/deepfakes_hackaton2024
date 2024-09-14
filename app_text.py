@@ -44,7 +44,7 @@ def replace_paragraphs_with_placeholder(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
 
     # Replace body with paragraphs
-    with open("output_file.json", 'r') as json_file:
+    with open("article_content.json", 'r') as json_file:
         data = json.load(json_file)
     
     # Remove any leading/trailing spaces and filter out empty strings
@@ -76,8 +76,8 @@ def replace_paragraphs_with_placeholder(html_content):
     imgs = soup.find_all("img")
     for img in imgs:
         if img:
-            img["srcset"] = "media/hackathon_images_base/mr_bean.jpg"
-            img["src"] = "media/hackathon_images_base/mr_bean.jpg"
+            img["srcset"] = "media/hackathon_images_base/conspiracy_image.png"
+            img["src"] = "media/hackathon_images_base/conspiracy_image.png"
     
     # Replace legend with new legend
     legends = soup.find_all('figcaption')
