@@ -24,11 +24,35 @@ def replace_paragraphs_with_placeholder(html_content):
         for p_tag in main_content_div.find_all('p', class_="paragraph inline-placeholder vossi-paragraph-primary-core-light"):
             p_tag.string = "Placeholder name"  # Replace content with the placeholder text
 
+    # Replace favicon with local icon
+    # <link href="/media/sites/cnn/favicon.ico" rel="icon" type="image/x-icon">
+    iconlink = soup.find('link', {"rel" : "shortcut icon"})
+    if iconlink:
+        iconlink.href = "/media/cnn.ico"
+    
     # Replace headline with text
     headline = soup.find('h1', class_="headline__text inline-placeholder vossi-headline-primary-core-light", id="maincontent")
     if headline:
         with open('title.txt') as f:
-            headline.string = f.read()  # Replace the headline text with contents of text file
+            headline.string = f.read()
+
+    # Replace title with text
+    title = soup.find('title')
+    if title:
+        with open('title.txt') as f:
+            title.string = f.read() + " | CNN"
+
+    # Replace image with new iamge
+    # <span class="inline-placeholder" data-editable="metaCaption">A car leaves Britain's embassy in Moscow on Friday.</span>
+    img = soup.find('img', {"alt":"A car leaves Britain's embassy in Moscow on Friday."})
+    if img:
+        img.src = "/media/cnn.ico"
+        img["alt"] = "Placeholder"
+
+    # Replace legend with new legend
+    legend = [tag for tag in soup.find_all('span', class_="inline-placeholder") if tag.string == "A car leaves Britain's embassy in Moscow on Friday."]
+    if len(legend) > 0:
+        legend[0].string = "Awesome new legend"
     
     # Return the modified HTML
     return str(soup)
@@ -42,7 +66,6 @@ def serve_content():
 
     
     modified_content = replace_paragraphs_with_placeholder(original_content)
-    print(modified_content)
     return Response(modified_content, mimetype='text/html')
 
 if __name__ == '__main__':
