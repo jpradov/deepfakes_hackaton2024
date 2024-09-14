@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, send_from_directory
 import requests
 from bs4 import BeautifulSoup
 
@@ -31,7 +31,7 @@ def replace_paragraphs_with_placeholder(html_content):
         iconlink.href = "/media/cnn.ico"
     
     # Replace headline with text
-    headline = soup.find('h1', class_="headline__text inline-placeholder vossi-headline-primary-core-light", id="maincontent")
+    headline = soup.find('h1')
     if headline:
         with open('title.txt') as f:
             headline.string = f.read()
@@ -40,14 +40,14 @@ def replace_paragraphs_with_placeholder(html_content):
     title = soup.find('title')
     if title:
         with open('title.txt') as f:
-            title.string = f.read() + " | CNN"
+            title.string = f.read() + " | BBC"
 
     # Replace image with new iamge
-    # <span class="inline-placeholder" data-editable="metaCaption">A car leaves Britain's embassy in Moscow on Friday.</span>
-    img = soup.find('img', {"alt":"A car leaves Britain's embassy in Moscow on Friday."})
-    if img:
-        img.src = "/media/cnn.ico"
-        img["alt"] = "Placeholder"
+    imgs = soup.find_all("img")
+    for img in imgs:
+        if img:
+            img["srcset"] = "media/hackathon_images_base/mr_bean.jpg"
+            img["src"] = "media/hackathon_images_base/mr_bean.jpg"
 
     # Replace legend with new legend
     legend = [tag for tag in soup.find_all('span', class_="inline-placeholder") if tag.string == "A car leaves Britain's embassy in Moscow on Friday."]
@@ -57,10 +57,15 @@ def replace_paragraphs_with_placeholder(html_content):
     # Return the modified HTML
     return str(soup)
 
+# Serve media files from the 'media' folder
+@app.route('/media/<path:filename>')
+def media_files(filename):
+    return send_from_directory('media', filename)
+
 # Step 2: Define a route to serve the content at localhost:8080
 @app.route('/')
 def serve_content():
-    url = 'https://edition.cnn.com/2024/09/13/europe/russia-expels-diplomats-intl-hnk/index.html'  # Replace with the URL you want to fetch
+    url = 'https://www.bbc.com/news/articles/cj9l9dlgpmno'  # Replace with the URL you want to fetch
     original_content = fetch_url_content(url)
     
 
