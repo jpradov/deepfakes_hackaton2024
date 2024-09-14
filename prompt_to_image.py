@@ -78,6 +78,6 @@ output = replicate.run(
 response = requests.get(output[0])
 
 # save the image to a file
-save_path = '"media/conspiracy_image.png"'
+save_path = 'media/conspiracy_image.png'
 with open(save_path, "wb") as f:
     f.write(response.content)
