@@ -76,8 +76,8 @@ def replace_paragraphs_with_placeholder(html_content):
     imgs = soup.find_all("img")
     for img in imgs:
         if img:
-            img["srcset"] = "media/hackathon_images_base/conspiracy_image.png"
-            img["src"] = "media/hackathon_images_base/conspiracy_image.png"
+            img["srcset"] = "media/conspiracy_image.png"
+            img["src"] = "media/conspiracy_image.png"
     
     # Replace legend with new legend
     legends = soup.find_all('figcaption')
