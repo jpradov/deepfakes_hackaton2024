@@ -7,7 +7,7 @@ api_key = "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"
 # model_id = "CompVis/stable-diffusion-v1-4"
 
 # model_id = "black-forest-labs/FLUX.1-schnell"
-model_id = "stabilityai/stable-diffusion-2-1"
+model_id = "black-forest-labs/FLUX.1-schnell"
 # model_id = "merve/flux-lego-lora-dreambooth"
 
 
