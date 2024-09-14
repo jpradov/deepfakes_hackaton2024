@@ -1,5 +1,7 @@
 from flask import Flask, Response, send_from_directory
 import requests
+import json
+import re
 from bs4 import BeautifulSoup
 
 
@@ -14,15 +16,45 @@ def fetch_url_content(url):
     except requests.exceptions.RequestException as e:
         return f"Error: {e}"
 
+def split_sentences(text):
+    # Define common abbreviations to protect
+    abbreviations = ["e.g.", "i.e.", "Dr.", "Mr.", "Ms.", "Mrs.", "Jr.", "Sr.", "Prof."]
+    
+    # Create a unique placeholder for each abbreviation
+    placeholders = {abbr: f"__{i}__" for i, abbr in enumerate(abbreviations)}
+    
+    # Replace abbreviations with placeholders
+    for abbr, placeholder in placeholders.items():
+        text = text.replace(abbr, placeholder)
+    
+    # Split the text by period followed by space or end of string
+    sentences = re.split(r'\.\s+(?!__\d+__)', text)
+    
+    # Restore abbreviations
+    for abbr, placeholder in placeholders.items():
+        sentences = [sentence.replace(placeholder, abbr) for sentence in sentences]
+    
+    # Remove any leading/trailing spaces and filter out empty strings
+    sentences = [sentence.strip() for sentence in sentences if sentence.strip()]
+    
+    return sentences
+
 
 def replace_paragraphs_with_placeholder(html_content):
     soup = BeautifulSoup(html_content, 'html.parser')
-    main_content_div = soup.find('div', class_="article__content")
 
-    if main_content_div:
-        # Step 4: Find all <p> tags with the specific class within the main content div
-        for p_tag in main_content_div.find_all('p', class_="paragraph inline-placeholder vossi-paragraph-primary-core-light"):
-            p_tag.string = "Placeholder name"  # Replace content with the placeholder text
+    # Replace body with paragraphs
+    with open("output_file.json", 'r') as json_file:
+        data = json.load(json_file)
+    
+    # Remove any leading/trailing spaces and filter out empty strings
+    sentences = split_sentences(data["article_body"])
+
+    for i, p_tag in enumerate(soup.find_all('p', class_="sc-eb7bd5f6-0 fYAfXe")):
+        if i < len(sentences):
+            p_tag.string = sentences[i]
+        else:
+            p_tag.string = ""
 
     # Replace favicon with local icon
     # <link href="/media/sites/cnn/favicon.ico" rel="icon" type="image/x-icon">
@@ -33,14 +65,12 @@ def replace_paragraphs_with_placeholder(html_content):
     # Replace headline with text
     headline = soup.find('h1')
     if headline:
-        with open('title.txt') as f:
-            headline.string = f.read()
+        headline.string = data["title"]
 
     # Replace title with text
     title = soup.find('title')
     if title:
-        with open('title.txt') as f:
-            title.string = f.read() + " | BBC"
+        title.string = data["title"]
 
     # Replace image with new iamge
     imgs = soup.find_all("img")
@@ -48,11 +78,11 @@ def replace_paragraphs_with_placeholder(html_content):
         if img:
             img["srcset"] = "media/hackathon_images_base/mr_bean.jpg"
             img["src"] = "media/hackathon_images_base/mr_bean.jpg"
-
+    
     # Replace legend with new legend
-    legend = [tag for tag in soup.find_all('span', class_="inline-placeholder") if tag.string == "A car leaves Britain's embassy in Moscow on Friday."]
-    if len(legend) > 0:
-        legend[0].string = "Awesome new legend"
+    legends = soup.find_all('figcaption')
+    for legend in legends:
+        legend.string = data["image_caption"]
     
     # Return the modified HTML
     return str(soup)
