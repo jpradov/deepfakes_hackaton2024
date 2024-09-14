@@ -52,7 +52,7 @@ def replace_paragraphs_with_placeholder(html_content):
 
     for i, p_tag in enumerate(soup.find_all('p', class_="sc-eb7bd5f6-0 fYAfXe")):
         if i < len(sentences):
-            p_tag.string = sentences[i]
+            p_tag.string = sentences[i] + "."
         else:
             p_tag.string = ""
 
