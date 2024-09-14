@@ -130,7 +130,7 @@ if __name__ == "__main__":
     # Argument parsing for command line usage
     parser = argparse.ArgumentParser(description="Generate a news article based on a conspiracy theory.")
     parser.add_argument("--conspiracy_theory", required=True, help="Conspiracy theory to generate an article for")
-    parser.add_argument("--output_file", default="output_file.json", help="Output file to save the generated article (default: output_file.json)")
+    parser.add_argument("--output_file", default="article_content.json", help="Output file to save the generated article (default: article_content.json)")
 
     args = parser.parse_args()
 
